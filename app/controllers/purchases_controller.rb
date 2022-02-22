@@ -1,6 +1,6 @@
 class PurchasesController < ApplicationController
   def create
-    render PurchaseCreator.call(purchase_params)
+    render PurchaseManager::PurchaseCreator.call(purchase_params)
   end
 
   private
