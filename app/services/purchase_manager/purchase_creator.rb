@@ -12,11 +12,11 @@ module PurchaseManager
     
     def create_purchase
       if @purchase_params[:gateway] == 'paypal'
-        Paypal.new(@purchase_params).save_order
+        Paypal.call(@purchase_params)
       elsif @purchase_params[:gateway] == 'stripe'
-        Stripe.new(@purchase_params).save_order
+        Stripe.call(@purchase_params)
       else
-        PurchaseGateway.new.save_order
+        PurchaseGateway.call
       end
     end
   end
