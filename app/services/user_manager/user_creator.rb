@@ -1,7 +1,8 @@
 module UserManager
   class UserCreator < ApplicationService
-    def initialize(user_params)
+    def initialize(cart_user, user_params)
       @user_params = user_params
+      @cart_user = cart_user
     end
 
     def call
@@ -11,7 +12,12 @@ module UserManager
     private
 
     def create_user
-      User.create(**@user_params.merge(guest: true))
+      if @cart_user.nil?
+        params = @user_params? @user_params : {}
+        User.create(**params.merge(guest: true))
+      else
+        @cart_user
+      end
     end
   end
 end

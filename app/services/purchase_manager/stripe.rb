@@ -7,11 +7,7 @@ module PurchaseManager
     def save_order
       cart = CartManager::CartFinder.call(@purchase_params[:cart_id])
 
-      user = if cart.user.nil?
-                UserManager::UserCreator.call(@purchase_params[:user] ? @purchase_params[:user] : {})
-            else
-                cart.user
-            end
+      user = UserManager::UserCreator.call(cart.user, @purchase_params[:user])
 
       if user.valid?
         order = Order.new(
