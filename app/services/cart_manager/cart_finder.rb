@@ -11,7 +11,9 @@ module CartManager
     private
 
     def find_cart
-      Cart.find_by(id: @cart_id)
+      cart = Cart.find_by(id: @cart_id)
+      raise 'Cart not found!' unless cart
+      return cart
     end
   end
 end

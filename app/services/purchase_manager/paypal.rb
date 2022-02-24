@@ -7,10 +7,6 @@ module PurchaseManager
     def save_order
       cart = CartManager::CartFinder.call(@purchase_params[:cart_id])
 
-      unless cart
-        return {json: { errors: [{ message: 'Cart not found!' }] }, status: :unprocessable_entity}
-      end
-
       user = if cart.user.nil?
                 UserManager::UserCreator.call(@purchase_params[:user] ? @purchase_params[:user] : {})
             else
@@ -52,6 +48,8 @@ module PurchaseManager
       else
         return {json: { errors: user.errors.map(&:full_message).map { |message| { message: message } } }, status: :unprocessable_entity}
       end
+    rescue => exception
+      return {json: { errors: [{ message: exception.message }] }, status: :unprocessable_entity}
     end
     
     private

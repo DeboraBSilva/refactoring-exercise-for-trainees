@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CartManager::CartFinder do
-  describe '#call' do
+  describe '.call' do
     context 'when cart exists' do
       let!(:user) { create(:user) }
       let!(:cart) { create(:cart, user: user) }
@@ -14,10 +14,9 @@ RSpec.describe CartManager::CartFinder do
     end
    
     context 'when cart does not exists' do
-      nonexistent_id = 1
+      let(:nonexistent_id) { 1 }
       it 'returns nil' do
-        cart_found = CartManager::CartFinder.call(nonexistent_id)
-        expect(cart_found).to be_nil
+        expect { CartManager::CartFinder.call(nonexistent_id) }.to raise_error('Cart not found!')
       end
     end
   end
