@@ -1,17 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe PurchaseManager::Paypal, type: :request do
-  include Requests
+RSpec.describe PurchaseManager::Paypal do
 
-  describe '#call' do
-    subject(:request!) { post '/purchases', params: params }
-
+  describe '.call' do
     shared_examples 'using logged in user present into the cart' do
       context 'and there is a user present in cart' do
         let!(:user) { create(:user) }
 
         it 'does not create a guest user' do
-          expect { request! }.not_to change(User, :count)
+          expect { PurchaseManager::Paypal.call(params) }.not_to change(User, :count)
         end
       end
     end
@@ -32,11 +29,11 @@ RSpec.describe PurchaseManager::Paypal, type: :request do
         end
 
         it 'creates new user' do
-          expect { request! }.to change(User, :count).by(1)
+          expect { PurchaseManager::Paypal.call(params) }.to change(User, :count).by(1)
         end
 
         it 'created user should be guest' do
-          request!
+          PurchaseManager::Paypal.call(params)
 
           expect(User.last).to be_guest
         end
@@ -55,18 +52,12 @@ RSpec.describe PurchaseManager::Paypal, type: :request do
         end
 
         it 'does not create a guest user' do
-          expect { request! }.not_to change(User, :count)
+          expect { PurchaseManager::Paypal.call(params) }.not_to change(User, :count)
         end
 
         it 'returns proper errors' do
-          request!
-
-          expect(response_body_as_json).to eq(
-            errors: [
-              { message: "Email can't be blank" },
-              { message: "First name can't be blank" },
-              { message: "Last name can't be blank" }
-            ]
+          expect(PurchaseManager::Paypal.call(params)).to eq(
+            {json: {errors: [{message: "Email can't be blank"}, {message: "First name can't be blank"}, {message: "Last name can't be blank"}]}, status: :unprocessable_entity}
           )
         end
       end
@@ -78,15 +69,9 @@ RSpec.describe PurchaseManager::Paypal, type: :request do
     context 'and cart does not exist' do
       let(:cart_id) { 1 }
 
-      before { request! }
-
-      it 'returns :unprocessable_entity' do
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-
       it 'returns proper errors' do
-        expect(response_body_as_json).to eq(
-          errors: [{ message: 'Cart not found!' }]
+        expect(PurchaseManager::Paypal.call(params)).to eq(
+          {json: {errors: [{message: "Cart not found!"}]}, status: :unprocessable_entity}
         )
       end
     end
@@ -113,15 +98,15 @@ RSpec.describe PurchaseManager::Paypal, type: :request do
       end
 
       it 'creates order' do
-        expect { request! }.to change(Order, :count).by(1)
+        expect { PurchaseManager::Paypal.call(params) }.to change(Order, :count).by(1)
       end
 
       it 'creates order line items' do
-        expect { request! }.to change(OrderLineItem, :count).by(3)
+        expect { PurchaseManager::Paypal.call(params) }.to change(OrderLineItem, :count).by(3)
       end
 
       it 'create order line items with proper attributes' do
-        request!
+        PurchaseManager::Paypal.call(params)
 
         expect(
           OrderLineItem.pluck(:unit_price_cents, :shipping_costs_cents, :taxes_cents, :paid_price_cents)
@@ -129,13 +114,13 @@ RSpec.describe PurchaseManager::Paypal, type: :request do
       end
 
       it "calculates order's subtotal_cents properly" do
-        request!
+        PurchaseManager::Paypal.call(params)
 
         expect(Order.last.subtotal_cents).to eq 5_700
       end
 
       it "calculates order's total properly" do
-        request!
+        PurchaseManager::Paypal.call(params)
 
         expect(Order.last.total_cents).to eq 6_000
       end
