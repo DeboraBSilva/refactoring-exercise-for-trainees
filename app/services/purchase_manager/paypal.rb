@@ -5,7 +5,7 @@ module PurchaseManager
     end
 
     def save_order
-      cart = CartManager::CartSelector.call(@purchase_params[:cart_id])
+      cart = CartManager::CartFinder.call(@purchase_params[:cart_id])
 
       unless cart
         return {json: { errors: [{ message: 'Cart not found!' }] }, status: :unprocessable_entity}

@@ -1,5 +1,5 @@
 module CartManager
-  class CartSelector < ApplicationService
+  class CartFinder < ApplicationService
     def initialize(cart_id)
       @cart_id = cart_id
     end
