@@ -13,7 +13,7 @@ RSpec.describe PurchaseManager::PurchaseCreator do
         let!(:cart_id) { cart.id }
 
         it 'returns status ok' do
-          expect(PurchaseManager::PurchaseCreator.call(params)).to include(status: :ok)
+          expect(PurchaseManager::PurchaseCreator.call(params)).to include(success: true)
         end       
       end
     end
@@ -23,7 +23,7 @@ RSpec.describe PurchaseManager::PurchaseCreator do
 
       it 'returns proper errors' do
         expect(PurchaseManager::PurchaseCreator.call(params)).to eq(
-          {errors: [{message: "Gateway not supported!"}], status: :unprocessable_entity}
+          { success: false, errors: [{message: "Gateway not supported!"}] }
         )
       end
     end

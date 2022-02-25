@@ -6,7 +6,7 @@ RSpec.describe PurchaseManager::PurchaseGateway do
 
     it 'returns proper error' do
       expect(response).to eq(
-        {errors: [{message: "Gateway not supported!"}], status: :unprocessable_entity}
+        { success: false, errors: [{message: "Gateway not supported!"}] }
       )
     end
   end

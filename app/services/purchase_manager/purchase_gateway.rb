@@ -7,7 +7,7 @@ module PurchaseManager
     private
 
     def save_order
-      {errors: [{ message: 'Gateway not supported!' }], status: :unprocessable_entity}
+      { success: false, errors: [{ message: 'Gateway not supported!' }] }
     end
   end
 end

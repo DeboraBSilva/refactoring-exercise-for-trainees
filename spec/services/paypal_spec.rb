@@ -57,7 +57,7 @@ RSpec.describe PurchaseManager::Paypal do
 
         it 'returns proper errors' do
           expect(PurchaseManager::Paypal.call(params)).to eq(
-            {errors: [{message: "Email can't be blank"}, {message: "First name can't be blank"}, {message: "Last name can't be blank"}], status: :unprocessable_entity}
+            { success: false, errors: [{message: "Email can't be blank"}, {message: "First name can't be blank"}, {message: "Last name can't be blank"}] }
           )
         end
       end
@@ -71,7 +71,7 @@ RSpec.describe PurchaseManager::Paypal do
 
       it 'returns proper errors' do
         expect(PurchaseManager::Paypal.call(params)).to eq(
-          {errors: [{message: "Cart not found!"}], status: :unprocessable_entity}
+          { success: false, errors: [{message: "Cart not found!"}] }
         )
       end
     end

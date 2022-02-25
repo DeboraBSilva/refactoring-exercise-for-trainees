@@ -37,15 +37,15 @@ module PurchaseManager
         order.save
 
         if order.valid?
-          return {order: { id: order.id }, status: :ok}
+          return { success: true, order: { id: order.id }, errors: [] }
         else
-          return {errors: order.errors.map(&:full_message).map { |message| { message: message } }, status: :unprocessable_entity}
+          return { success: false, errors: order.errors.map(&:full_message).map { |message| { message: message } } }
         end
       else
-        return {errors: user.errors.map(&:full_message).map { |message| { message: message } }, status: :unprocessable_entity}
+        return { success: false, errors: user.errors.map(&:full_message).map { |message| { message: message } } }
       end
     rescue => exception
-      return {errors: [{ message: exception.message }], status: :unprocessable_entity}
+      return { success: false, errors: [{ message: exception.message }] }
     end
     
     private
