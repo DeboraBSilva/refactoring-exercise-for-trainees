@@ -23,7 +23,7 @@ RSpec.describe PurchaseManager::PurchaseCreator do
 
       it 'returns proper errors' do
         expect(PurchaseManager::PurchaseCreator.call(params)).to eq(
-          {json: {errors: [{message: "Gateway not supported!"}]}, status: :unprocessable_entity}
+          {errors: [{message: "Gateway not supported!"}], status: :unprocessable_entity}
         )
       end
     end

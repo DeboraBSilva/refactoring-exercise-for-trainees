@@ -57,7 +57,7 @@ RSpec.describe PurchaseManager::Stripe do
 
         it 'returns proper errors' do
           expect(PurchaseManager::Stripe.call(params)).to eq(
-            {json: {errors: [{message: "Email can't be blank"}, {message: "First name can't be blank"}, {message: "Last name can't be blank"}]}, status: :unprocessable_entity}
+            {errors: [{message: "Email can't be blank"}, {message: "First name can't be blank"}, {message: "Last name can't be blank"}], status: :unprocessable_entity}
           )
         end
       end
@@ -71,7 +71,7 @@ RSpec.describe PurchaseManager::Stripe do
 
       it 'returns proper errors' do
         expect(PurchaseManager::Stripe.call(params)).to eq(
-          {json: {errors: [{message: "Cart not found!"}]}, status: :unprocessable_entity}
+          {errors: [{message: "Cart not found!"}], status: :unprocessable_entity}
         )
       end
     end

@@ -1,6 +1,11 @@
 class PurchasesController < ApplicationController
   def create
-    render PurchaseManager::PurchaseCreator.call(purchase_params)
+    result = PurchaseManager::PurchaseCreator.call(purchase_params)
+    if result.has_key?(:errors)
+      render json: { errors: result[:errors] }, status: result[:status]
+    else
+      render json: { status: :success, order: result[:order] }, status: result[:status]
+    end
   end
 
   private
