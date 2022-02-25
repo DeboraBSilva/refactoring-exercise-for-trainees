@@ -98,31 +98,9 @@ RSpec.describe PurchaseManager::Paypal do
       end
 
       it 'creates order' do
-        expect { PurchaseManager::Paypal.call(params) }.to change(Order, :count).by(1)
-      end
-
-      it 'creates order line items' do
-        expect { PurchaseManager::Paypal.call(params) }.to change(OrderLineItem, :count).by(3)
-      end
-
-      it 'create order line items with proper attributes' do
-        PurchaseManager::Paypal.call(params)
-
-        expect(
-          OrderLineItem.pluck(:unit_price_cents, :shipping_costs_cents, :taxes_cents, :paid_price_cents)
-        ).to eq([[1_900, 100, 0, 2_000], [1_900, 100, 0, 2_000], [1_900, 100, 0, 2_000]])
-      end
-
-      it "calculates order's subtotal_cents properly" do
-        PurchaseManager::Paypal.call(params)
-
-        expect(Order.last.subtotal_cents).to eq 5_700
-      end
-
-      it "calculates order's total properly" do
-        PurchaseManager::Paypal.call(params)
-
-        expect(Order.last.total_cents).to eq 6_000
+        expect(PurchaseManager::Paypal.call(params)).to match(
+          { success: true, order: {id: kind_of(Integer)}, errors: [] }
+        )
       end
     end
   end
